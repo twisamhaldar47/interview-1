@@ -123,23 +123,21 @@ const advertisements = [
 
 router.get('/get/:string',(req, res)=> {
     const {string} = req.params
-    // let products = []
-    // products.forEach(
-    //     products.push(products.find(prd=>prd.name === string))
-    // )
-    const foundProductByName = products.find(prd=>prd.name === string)
-    const foundProductByDesc = products.find(prd=>prd.description === string)
-    const foundProductByCategory = products.find(prd=>prd.category === string)
-    if(foundProductByName){
-        res.send(foundProductByName)
-    }else if(foundProductByDesc){
-        res.send(foundProductByDesc)
-    }else if(foundProductByCategory){
-        res.send(foundProductByCategory)
-    }else{
-        res.send("Product not found")
-    }
-    // res.send(foundProduct)
+    console.log(string.split(' ')[0])
+    const results = products.filter((pr) =>
+        pr.name.toLowerCase().includes(string.toLowerCase()) ||
+        pr.description.toLowerCase().includes(string.toLowerCase().split(' ')[0]) ||
+        pr.category.toLowerCase().includes(string.toLowerCase())
+
+    )
+    const final = results.map((r)=>{
+        const ads = advertisements.find(ad => ad.productId === r.id)
+        return {
+            ...r,
+            advertisement : ads ? ads : null
+        }
+    })
+    res.send(final)
 })
 
 module.exports = router
